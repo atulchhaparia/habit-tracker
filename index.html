@@ -265,6 +265,25 @@
       flex-shrink: 0;
     }
 
+    .dot-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dot-label {
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: .01em;
+    }
+
+    .dot-label.is-today {
+      color: var(--text);
+      font-weight: 700;
+    }
+
     .day-dot {
       width: 28px;
       height: 28px;
@@ -489,10 +508,15 @@
       const dotsWrap = document.createElement('div');
       dotsWrap.className = 'day-dots';
 
+      const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
       for (let offset = -6; offset <= 0; offset++) {
         const dateKey = isoDate(offset);
         const isToday = dateKey === TODAY;
         const isDone  = !!habit.done[dateKey];
+
+        const col = document.createElement('div');
+        col.className = 'dot-col';
 
         const dot = document.createElement('button');
         dot.className =
@@ -510,7 +534,15 @@
           render();
         });
 
-        dotsWrap.appendChild(dot);
+        const d = new Date();
+        d.setDate(d.getDate() + offset);
+        const label = document.createElement('div');
+        label.className = 'dot-label' + (isToday ? ' is-today' : '');
+        label.textContent = DAY_NAMES[d.getDay()];
+
+        col.appendChild(dot);
+        col.appendChild(label);
+        dotsWrap.appendChild(col);
       }
 
       card.appendChild(dotsWrap);
